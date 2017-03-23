@@ -4,7 +4,7 @@ export default class CharacterContainer extends Component {
 
   render() {
     return (
-
+      <div></div>
     )
   }
 

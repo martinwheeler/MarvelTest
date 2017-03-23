@@ -5,16 +5,10 @@ export function getTimestamp() {
 }
 
 export function getHash(ts, privKey, pubKey) {
-  let beforeHash = ts + privKey + pubKey,
-  hash = crypto.createHash('md5').update(beforeHash).digest("hex");
-
-  return hash;
+  let hashValue = ts + privKey + pubKey;
+  return crypto.createHash('md5').update(hashValue).digest("hex");
 }
 
 export function formatResponse(response) {
-  let newResponse = {
-    ...response.data
-  };
-
-  return newResponse;
+  return {...response.data};
 }

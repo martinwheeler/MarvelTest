@@ -1,45 +1,44 @@
 import {
-  TUTOR_ATTEMPTING_EDITPROFILE,
-  TUTOR_EDITPROFILE_SUCCESS,
-  TUTOR_EDITPROFILE_FAIL,
-} from "../actions/characters";
+  CHARACTER_ATTEMPT_FETCH,
+  CHARACTER_ATTEMPT_FETCH_SUCCESS,
+  CHARACTER_ATTEMPT_FETCH_FAIL,
+} from '../../actions/characters';
 
 let initialState = {
   data: {},
   fetchedData: {},
-  passwordResponse: {},
 
-  attemptingEdit: false,
-  editSuccess: false,
-  editFail: false,
-  editError: null,
+  attemptingFetch: false,
+  fetchSuccess: false,
+  fetchFail: false,
+  fetchError: null,
 };
 
-export default function tutorProfile(state = initialState, action) {
+export default function characters(state = initialState, action) {
   switch (action.type) {
 
-    case TUTOR_ATTEMPTING_EDITPROFILE:
+    case CHARACTER_ATTEMPT_FETCH:
       return {
         ...state,
-        attemptingEdit: true,
+        attemptingFetch: true,
       };
 
-    case TUTOR_EDITPROFILE_SUCCESS:
+    case CHARACTER_ATTEMPT_FETCH_SUCCESS:
       return {
         ...state,
-        attemptingEdit: false,
-        editSuccess: true,
-        editFail: false,
+        attemptingFetch: false,
+        fetchSuccess: true,
+        fetchFail: false,
         data: action.payload
       };
 
-    case TUTOR_EDITPROFILE_FAIL:
+    case CHARACTER_ATTEMPT_FETCH_FAIL:
       return {
         ...state,
-        attemptingEdit: false,
-        editSuccess: false,
-        editFail: true,
-        editError: action.payload
+        attemptingFetch: false,
+        fetchSuccess: false,
+        fetchFail: true,
+        fetchError: action.payload
       };
 
     default:
