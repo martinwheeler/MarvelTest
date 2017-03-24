@@ -9,6 +9,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import reducers from './reducers'
 import App from './App';
+import ListingContainer from './containers/ListingContainer';
 
 injectTapEventPlugin();
 
@@ -17,7 +18,7 @@ const store = createStore(
     ...reducers,
     routing: routerReducer
   })
-)
+);
 
 const history = syncHistoryWithStore(browserHistory, store);
 
@@ -25,6 +26,7 @@ ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
       <Route path='/' component={App}>
+        <Route path='/list/:type' component={ListingContainer} />
       </Route>
     </Router>
   </Provider>,
