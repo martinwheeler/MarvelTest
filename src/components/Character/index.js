@@ -10,7 +10,8 @@ const style = {
   paper: {},
   card: {
     cursor: 'pointer',
-    margin: 20
+    margin: 20,
+    width: 216
   }
 };
 
@@ -28,7 +29,7 @@ export default class Character extends Component {
         <Paper zDepth={2} >
           <CardMedia onTouchTap={() => character.view(character.id)}>
             <img src={`
-              ${character.thumbnail.path}/portrait_uncanny.${character.thumbnail.extension}
+              ${character.thumbnail.path}/portrait_incredible.${character.thumbnail.extension}
             `} />
           </CardMedia>
           <CardTitle title={character.name} subtitle={''} onTouchTap={() => character.view(character.id)} />

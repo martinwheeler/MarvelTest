@@ -1,31 +1,32 @@
 /**
  * Created by martinwheeler on 24/3/17.
  */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-import { GridList, GridTile } from 'material-ui/GridList';
-
-import TextField from 'material-ui/TextField';
-
-import { attemptFetchCharacters, attemptFetchCharacterById } from '../../actions/characters';
-
-import Character from '../../components/Character';
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {GridList, GridTile} from "material-ui/GridList";
+import Masonry from "react-masonry-component";
+import Waypoint from "react-waypoint";
+import TextField from "material-ui/TextField";
+import {attemptFetchCharacters, attemptFetchCharacterById} from "../../actions/characters";
+import Character from "../../components/Character";
+import {browserHistory} from 'react-router';
 
 const styles = {
   root: {
     padding: 20,
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
   },
-  gridList: {
-
-  },
-  listings: {
-    maxWidth: '50vw'
-  },
+  gridList: {},
+  gridItem: {},
+  listings: {},
+  loading: {
+    textAlign: 'center',
+    margin: '100px 0',
+    textTransform: 'uppercase',
+    fontFamily: 'Arial, sans-serif'
+  }
 };
+
+const amountToLoad = 20;
 
 class ListingContainer extends Component {
 
@@ -35,13 +36,16 @@ class ListingContainer extends Component {
       colSize: 4,
       characters: []
     };
+    this.amountToOffset = 0;
   }
 
   componentWillMount() {
-    this.props.attemptFetchCharacters({ limit: 50 });
+    this.props.attemptFetchCharacters({limit: amountToLoad});
   }
 
   componentDidUpdate(prevProps, prevState) {
+
+    const {characters} = this.state;
 
     const {
       data,
@@ -51,8 +55,8 @@ class ListingContainer extends Component {
     } = this.props;
 
     if (prevProps.attemptingFetch && !attemptingFetch && fetchSuccess) {
-      console.log(data, 'success');
-      this.setState({ characters: data.results });
+      this.amountToOffset += data.results.length;
+      this.setState({characters: [...characters, ...data.results]});
     }
 
     if (prevProps.attemptingFetch && !attemptingFetch && fetchFail) {
@@ -61,16 +65,21 @@ class ListingContainer extends Component {
 
   }
 
+  loadMore = () => {
+    this.props.attemptFetchCharacters({limit: amountToLoad, offset: this.amountToOffset});
+  };
+
   navigateToId = (id) => {
-    this.props.attemptFetchCharacterById({id: id});
+    browserHistory.push(`/character/${id}`);
+    // this.props.attemptFetchCharacterById({id: id});
   };
 
   render() {
-    const { characters } = this.state;
+    const {characters} = this.state;
     const self = this;
 
     return (
-      <div style={styles.root} >
+      <div style={styles.root}>
         <GridList
           cols={12}
           cellHeight="auto"
@@ -90,17 +99,15 @@ class ListingContainer extends Component {
             rows={1}
             style={styles.listings}
           >
-            <GridList
-              cols={12}
-              style={styles.gridList}
-              cellHeight="auto"
+            <Masonry
+              updateOnEachImageLoad={true}
             >
               {characters.map((character, key) => (
-                <GridTile key={key} cols={this.state.colSize} >
-                  <Character character={{...character, view: self.navigateToId}} />
-                </GridTile>
+                <Character character={{...character, view: self.navigateToId}}/>
               ))}
-            </GridList>
+            </Masonry>
+            <Waypoint topOffset="20%" onEnter={() => this.loadMore()}/>
+            <div style={styles.loading}>Loading ...</div>
           </GridTile>
         </GridList>
       </div>

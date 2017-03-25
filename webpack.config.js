@@ -15,6 +15,7 @@ module.exports = {
     // options related to how webpack emits results
 
     path: path.resolve(__dirname, "dist"), // string
+    publicPath: '/build/',
     // the target directory for all output files
     // must be an absolute path (use the Node.js path module)
 
@@ -72,7 +73,7 @@ module.exports = {
     hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
     https: false, // true for self-signed, object for cert authority
     noInfo: true, // only errors & warns on hot reload,
-    port: 9000
+    port: 9000,
     // ...
   },
 
