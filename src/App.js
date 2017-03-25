@@ -4,11 +4,12 @@ import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import Home from './components/Home';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { indigo500 } from 'material-ui/styles/colors'
 
 import Drawer from 'material-ui/Drawer';
+
+import ListingContainer from './containers/ListingContainer';
 
 export default class App extends Component {
 
@@ -20,13 +21,13 @@ export default class App extends Component {
   }
 
   handlePageChange = (page) => {
-    this.setState({currentPage: page, open: false});
+    this.setState({ currentPage: page, open: false });
   };
 
   render() {
     const appBarStyles = {
       backgroundColor: indigo500
-    }
+    };
 
     return (
       <MuiThemeProvider>
@@ -34,7 +35,7 @@ export default class App extends Component {
           <Drawer
             open={this.state.open}
             docked={false}
-            onRequestChange={(open) => this.setState({open})}
+            onRequestChange={(open) => this.setState({ open })}
           >
             <MenuItem
               onTouchTap={(e) => this.handlePageChange(e.target.textContent)}
@@ -69,14 +70,14 @@ export default class App extends Component {
           </Drawer>
           <AppBar
             title="Marvel"
-            onLeftIconButtonTouchTap={() => this.setState({open: !this.state.open})}
+            onLeftIconButtonTouchTap={() => this.setState({ open: !this.state.open })}
             iconElementRight={
               <IconMenu
                 iconButtonElement={
                   <IconButton><MoreVertIcon /></IconButton>
                 }
-                targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
               >
                 <MenuItem primaryText="Refresh" />
                 <MenuItem primaryText="Help" />
@@ -85,7 +86,7 @@ export default class App extends Component {
             }
             style={appBarStyles}
           />
-          <Home />
+          <ListingContainer currentView={'Character'} />
         </div>
       </MuiThemeProvider>
     )

@@ -1,12 +1,7 @@
-import {
-  CHARACTER_ATTEMPT_FETCH,
-  CHARACTER_ATTEMPT_FETCH_SUCCESS,
-  CHARACTER_ATTEMPT_FETCH_FAIL,
-} from '../../actions/characters';
+import * as actions from '../../actions/characters';
 
 let initialState = {
   data: {},
-  fetchedData: {},
 
   attemptingFetch: false,
   fetchSuccess: false,
@@ -17,13 +12,15 @@ let initialState = {
 export default function characters(state = initialState, action) {
   switch (action.type) {
 
-    case CHARACTER_ATTEMPT_FETCH:
+    case actions.CHARACTER_ATTEMPT_FETCH_BY_ID:
+    case actions.CHARACTER_ATTEMPT_FETCH:
       return {
         ...state,
         attemptingFetch: true,
       };
 
-    case CHARACTER_ATTEMPT_FETCH_SUCCESS:
+    case actions.CHARACTER_ATTEMPT_FETCH_BY_ID_SUCCESS:
+    case actions.CHARACTER_ATTEMPT_FETCH_SUCCESS:
       return {
         ...state,
         attemptingFetch: false,
@@ -32,7 +29,8 @@ export default function characters(state = initialState, action) {
         data: action.payload
       };
 
-    case CHARACTER_ATTEMPT_FETCH_FAIL:
+    case actions.CHARACTER_ATTEMPT_FETCH_BY_ID_FAIL:
+    case actions.CHARACTER_ATTEMPT_FETCH_FAIL:
       return {
         ...state,
         attemptingFetch: false,

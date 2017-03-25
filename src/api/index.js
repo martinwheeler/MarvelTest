@@ -32,14 +32,24 @@ export function getCharacters(body) {
     ...body
   };
 
-  console.log('hash', utils.getHash(ts, keys.private, keys.public));
-
   return new Promise((resolve, reject) => {
     get(`characters`, params, resolve, reject);
   });
 }
 
+export function getCharacterById(body) {
+  let ts = utils.getTimestamp(),
+    params = {
+      ts: ts,
+      apikey: keys.public,
+      hash: utils.getHash(ts, keys.private, keys.public),
+      ...body
+    };
 
+  return new Promise((resolve, reject) => {
+    get(`characters/${params.id}`, params, resolve, reject);
+  });
+}
 
 // customizing headers per-request
 // api.post('/users', {name: 'steve'}, {headers: {'x-gigawatts': '1.21'}})

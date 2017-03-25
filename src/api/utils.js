@@ -10,5 +10,5 @@ export function getHash(ts, privKey, pubKey) {
 }
 
 export function formatResponse(response) {
-  return {...response.data};
+  return {...response.data.data};
 }
