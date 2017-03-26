@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import Drawer from 'material-ui/Drawer';
 import ListingContainer from './containers/ListingContainer';
 import SingleObjectContainer from './containers/SingleObjectContainer';
+import { browserHistory } from 'react-router';
 
 class App extends Component {
 
@@ -23,20 +24,8 @@ class App extends Component {
 
   handlePageChange = (page) => {
     this.setState({ currentPage: page, open: false });
-  };
 
-  getCurrentComponent = () => {
-    const { params } = this.props;
-
-    switch (params.type) {
-      case 'character':
-
-        break;
-
-      case '':
-        break;
-    }
-
+    browserHistory.push(`/${page.toLowerCase()}`);
   };
 
   render() {
@@ -111,20 +100,20 @@ class App extends Component {
     const { params } = this.props;
 
     if (params.type && params.typeId) {
-      return <SingleObjectContainer currentView={params.type} viewId={params.typeId}/>
+      return <SingleObjectContainer currentView={params.type} viewId={params.typeId} />
     }
 
-    return (
-      <ListingContainer/>
-    )
+    if (params.type && !params.typeId) {
+      return <ListingContainer currentView={params.type} />
+    }
+
+    return ''
   }
 
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-
-  }
+  return {}
 };
 
 export default connect()(App);

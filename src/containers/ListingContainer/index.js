@@ -1,15 +1,16 @@
 /**
  * Created by martinwheeler on 24/3/17.
  */
-import React, {Component} from "react";
-import {connect} from "react-redux";
-import {GridList, GridTile} from "material-ui/GridList";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { GridList, GridTile } from "material-ui/GridList";
 import Masonry from "react-masonry-component";
 import Waypoint from "react-waypoint";
 import TextField from "material-ui/TextField";
-import {attemptFetchCharacters, attemptFetchCharacterById} from "../../actions/characters";
-import CharacterCard from "../../components/CharacterCard";
-import {browserHistory} from 'react-router';
+import { attemptFetchCharacters } from "../../actions/characters";
+import { attemptFetchComics, attemptFetchComicById } from "../../actions/comics";
+import MarvelCard from "../../components/MarvelCard";
+import { browserHistory } from 'react-router';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import Measure from 'react-measure';
 
@@ -39,7 +40,7 @@ class ListingContainer extends Component {
     super(props);
     this.state = {
       colSize: 4,
-      characters: [],
+      items: [],
       loading: "loading",
       width: 0
     };
@@ -47,47 +48,80 @@ class ListingContainer extends Component {
   }
 
   componentWillMount() {
-    this.props.attemptFetchCharacters({limit: amountToLoad});
+    switch (this.props.currentView) {
+      case 'characters':
+      default:
+        return this.props.attemptFetchCharacters({ limit: amountToLoad });
+      case 'comics':
+        return this.props.attemptFetchComics({ limit: amountToLoad });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
 
-    const {characters} = this.state;
+    const { items } = this.state;
 
     const {
       data,
       attemptingFetch,
       fetchSuccess,
-      fetchFail
+      fetchFail,
+      currentView
     } = this.props;
 
-    if (prevProps.attemptingFetch && !attemptingFetch) {
-      this.setState({loading: 'ready'});
-    } else if (!prevProps.attemptingFetch && attemptingFetch) {
-      this.setState({loading: 'loading'});
+    // reset the view as we have changed what type of items to fetch
+    if (prevProps.currentView !== currentView) {
+      this.setState({items: []});
+      this.amountToOffset = 0;
+      this.loadMore();
     }
 
-    if (prevProps.attemptingFetch && !attemptingFetch && fetchSuccess) {
-      this.amountToOffset += data.results.length;
-      this.setState({characters: [...characters, ...data.results]});
+    // updating loading spinners state depending on current fetch status
+    if (prevProps.attemptingFetch[ currentView ] && !attemptingFetch[ currentView ]) {
+      this.setState({ loading: 'ready' });
+      console.log('read')
+    } else if (!prevProps.attemptingFetch[ currentView ] && attemptingFetch[ currentView ]) {
+      this.setState({ loading: 'loading' });
+      console.log('load')
     }
 
-    if (prevProps.attemptingFetch && !attemptingFetch && fetchFail) {
-      console.log(data, 'fail')
+    // success fetch
+    if (prevProps.attemptingFetch[ currentView ] && !attemptingFetch[ currentView ] &&
+      fetchSuccess[ currentView ]) {
+      this.amountToOffset += data[ this.props.currentView ].results.length;
+      this.setState({ items: [ ...items, ...data[ this.props.currentView ].results ] });
+    }
+
+    // fail fetch
+    if (prevProps.attemptingFetch[ currentView ] && !attemptingFetch[ currentView ] &&
+      fetchFail[ currentView ]) {
+      console.log('fail')
     }
 
   }
 
   loadMore = () => {
-    this.props.attemptFetchCharacters({limit: amountToLoad, offset: this.amountToOffset});
+    switch (this.props.currentView) {
+      case 'characters':
+      default:
+        return this.props.attemptFetchCharacters({
+          limit: amountToLoad,
+          offset: this.amountToOffset
+        });
+      case 'comics':
+        return this.props.attemptFetchComics({ limit: amountToLoad, offset: this.amountToOffset });
+    }
   };
 
   navigateToId = (id) => {
-    browserHistory.push(`/character/${id}`);
+    browserHistory.push(`/${this.props.currentView}/${id}`);
   };
 
+  /*
+   * Render everything in a masonry style layout.
+   */
   render() {
-    const {characters, loading, width} = this.state;
+    const { items, loading, width } = this.state;
     const self = this;
 
     let cardAmount = parseInt(this.state.width / 256);
@@ -98,10 +132,11 @@ class ListingContainer extends Component {
     };
 
     return (
-      <div style={styles.root}>
-        <Measure onMeasure={({width}) => this.setState({width: width})}>
+      <div style={styles.root} >
+        <Measure onMeasure={({ width }) => this.setState({ width: width })} >
           <div></div>
         </Measure>
+
         <GridList
           cols={12}
           cellHeight="auto"
@@ -125,12 +160,14 @@ class ListingContainer extends Component {
               updateOnEachImageLoad={true}
               style={dynamicWidth}
             >
-              {characters.map((character, key) => (
-                <CharacterCard key={key} character={{...character, view: self.navigateToId}}/>
+              {items.map((item, key) => (
+                <MarvelCard key={key} item={{ ...item, view: self.navigateToId }} />
               ))}
             </Masonry>
-            <Waypoint topOffset="60%" onEnter={() => this.loadMore()}/>
-            <div style={styles.loading}>
+
+            <Waypoint topOffset="60%" onEnter={() => this.loadMore()} />
+
+            <div style={styles.loading} >
               <RefreshIndicator
                 size={50}
                 left={0}
@@ -150,17 +187,29 @@ class ListingContainer extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    data: state.characters.data,
-    attemptingFetch: state.characters.attemptingFetch,
-    fetchSuccess: state.characters.fetchSuccess,
-    fetchFail: state.characters.fetchFail
+    data: {
+      characters: state.characters.data,
+      comics: state.comics.data
+    },
+    attemptingFetch: {
+      characters: state.characters.attemptingFetch,
+      comics: state.comics.attemptingFetch
+    },
+    fetchSuccess: {
+      characters: state.characters.fetchSuccess,
+      comics: state.comics.fetchSuccess
+    },
+    fetchFail: {
+      characters: state.characters.fetchFail,
+      comics: state.comics.fetchFail
+    }
   }
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     attemptFetchCharacters: (payload) => dispatch(attemptFetchCharacters(payload)),
-    attemptFetchCharacterById: (payload) => dispatch(attemptFetchCharacterById(payload)),
+    attemptFetchComics: (payload) => dispatch(attemptFetchComics(payload)),
   }
 };
 

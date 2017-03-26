@@ -1,8 +1,8 @@
 /**
  * Created by martinwheeler on 25/3/17.
  */
-import React, {Component} from "react";
-import {Card, CardActions, CardMedia, CardTitle, CardText} from "material-ui/Card";
+import React, { Component } from "react";
+import { Card, CardActions, CardMedia, CardTitle, CardText } from "material-ui/Card";
 import Paper from "material-ui/Paper";
 import FlatButton from "material-ui/FlatButton";
 
@@ -29,38 +29,38 @@ const style = {
   }
 };
 
-export default class CharacterCard extends Component {
+export default class MarvelCard extends Component {
 
   constructor(props) {
     super(props);
   }
 
   render() {
-    const {character} = this.props;
+    const { item } = this.props;
 
     return (
-      <div style={style.wrapper}>
-        <Card style={style.card}>
-          <Paper zDepth={2}>
-            <CardMedia style={style.image} onTouchTap={() => character.view(character.id)}>
+      <div style={style.wrapper} >
+        <Card style={style.card} >
+          <Paper zDepth={2} >
+            <CardMedia style={style.image} onTouchTap={() => item.view(item.id)} >
               <img src={`
-              ${character.thumbnail.path}/portrait_incredible.${character.thumbnail.extension}
-            `}/>
+              ${item.thumbnail.path}/portrait_incredible.${item.thumbnail.extension}
+            `} />
             </CardMedia>
             <CardTitle
               style={style.title}
-              title={character.name}
+              title={item.name || item.title}
               subtitle={''}
-              onTouchTap={() => character.view(character.id)}
+              onTouchTap={() => item.view(item.id)}
             />
             <CardText
               style={style.body}
-              onTouchTap={() => character.view(character.id)}
+              onTouchTap={() => item.view(item.id)}
             >
-              {character.description}
+              {item.description}
             </CardText>
             <CardActions>
-              <FlatButton label="Read More" onTouchTap={() => console.log('this')}/>
+              <FlatButton label="Read More" onTouchTap={() => console.log('this')} />
             </CardActions>
           </Paper>
         </Card>

@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 
 import characters from './characters';
-import reducer from 'react-notification-system-redux';
+import comics from './comics';
+import {reducer as notifications} from 'react-notification-system-redux';
 
 export default combineReducers({
-  reducer,
-  characters
+  characters,
+  comics,
+  notifications
 });

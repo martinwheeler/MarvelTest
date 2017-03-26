@@ -23,6 +23,12 @@ const get = function(url, body, resolve, reject) {
     });
 };
 
+/**
+ * Gets characters and can have a specified limit and offset.
+ *
+ * @param body
+ * @returns {Promise}
+ */
 export function getCharacters(body) {
   let ts = utils.getTimestamp(),
   params = {
@@ -37,6 +43,12 @@ export function getCharacters(body) {
   });
 }
 
+/**
+ * Gets character by ID.
+ *
+ * @param body
+ * @returns {Promise}
+ */
 export function getCharacterById(body) {
   let ts = utils.getTimestamp(),
     params = {
@@ -48,6 +60,46 @@ export function getCharacterById(body) {
 
   return new Promise((resolve, reject) => {
     get(`characters/${params.id}`, params, resolve, reject);
+  });
+}
+
+/**
+ * Gets comics and can have a specified limit and offset.
+ *
+ * @param body
+ * @returns {Promise}
+ */
+export function getComics(body) {
+  let ts = utils.getTimestamp(),
+    params = {
+      ts: ts,
+      apikey: keys.public,
+      hash: utils.getHash(ts, keys.private, keys.public),
+      ...body
+    };
+
+  return new Promise((resolve, reject) => {
+    get(`comics`, params, resolve, reject);
+  });
+}
+
+/**
+ * Gets comic by ID.
+ *
+ * @param body
+ * @returns {Promise}
+ */
+export function getComicById(body) {
+  let ts = utils.getTimestamp(),
+    params = {
+      ts: ts,
+      apikey: keys.public,
+      hash: utils.getHash(ts, keys.private, keys.public),
+      ...body
+    };
+
+  return new Promise((resolve, reject) => {
+    get(`comics/${params.id}`, params, resolve, reject);
   });
 }
 
