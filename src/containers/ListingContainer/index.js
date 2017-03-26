@@ -8,8 +8,9 @@ import Masonry from "react-masonry-component";
 import Waypoint from "react-waypoint";
 import TextField from "material-ui/TextField";
 import {attemptFetchCharacters, attemptFetchCharacterById} from "../../actions/characters";
-import Character from "../../components/Character";
+import CharacterCard from "../../components/CharacterCard";
 import {browserHistory} from 'react-router';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 const styles = {
   root: {
@@ -19,10 +20,13 @@ const styles = {
   gridItem: {},
   listings: {},
   loading: {
-    textAlign: 'center',
-    margin: '100px 0',
-    textTransform: 'uppercase',
-    fontFamily: 'Arial, sans-serif'
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  refresh: {
+    display: 'inline-block',
+    position: 'relative',
+    margin: '100px 0'
   }
 };
 
@@ -34,7 +38,8 @@ class ListingContainer extends Component {
     super(props);
     this.state = {
       colSize: 4,
-      characters: []
+      characters: [],
+      loading: "loading"
     };
     this.amountToOffset = 0;
   }
@@ -53,6 +58,12 @@ class ListingContainer extends Component {
       fetchSuccess,
       fetchFail
     } = this.props;
+
+    if (prevProps.attemptingFetch && !attemptingFetch) {
+      this.setState({loading: 'ready'});
+    } else if (!prevProps.attemptingFetch && attemptingFetch) {
+      this.setState({loading: 'loading'});
+    }
 
     if (prevProps.attemptingFetch && !attemptingFetch && fetchSuccess) {
       this.amountToOffset += data.results.length;
@@ -75,7 +86,7 @@ class ListingContainer extends Component {
   };
 
   render() {
-    const {characters} = this.state;
+    const {characters, loading} = this.state;
     const self = this;
 
     return (
@@ -103,11 +114,20 @@ class ListingContainer extends Component {
               updateOnEachImageLoad={true}
             >
               {characters.map((character, key) => (
-                <Character character={{...character, view: self.navigateToId}}/>
+                <CharacterCard key={key} character={{...character, view: self.navigateToId}}/>
               ))}
             </Masonry>
-            <Waypoint topOffset="20%" onEnter={() => this.loadMore()}/>
-            <div style={styles.loading}>Loading ...</div>
+            <Waypoint topOffset="60%" onEnter={() => this.loadMore()}/>
+            <div style={styles.loading}>
+              <RefreshIndicator
+                size={50}
+                left={0}
+                top={0}
+                loadingColor="#FF9800"
+                status={loading}
+                style={styles.refresh}
+              />
+            </div>
           </GridTile>
         </GridList>
       </div>

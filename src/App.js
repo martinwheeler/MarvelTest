@@ -5,23 +5,38 @@ import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import { indigo500 } from 'material-ui/styles/colors'
-
+import { indigo500 } from 'material-ui/styles/colors';
+import { connect } from 'react-redux';
 import Drawer from 'material-ui/Drawer';
-
 import ListingContainer from './containers/ListingContainer';
+import SingleObjectContainer from './containers/SingleObjectContainer';
 
-export default class App extends Component {
+class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       open: false,
     };
+    this.currentComponent = undefined;
   }
 
   handlePageChange = (page) => {
     this.setState({ currentPage: page, open: false });
+  };
+
+  getCurrentComponent = () => {
+    const { params } = this.props;
+
+    switch (params.type) {
+      case 'character':
+
+        break;
+
+      case '':
+        break;
+    }
+
   };
 
   render() {
@@ -86,10 +101,30 @@ export default class App extends Component {
             }
             style={appBarStyles}
           />
-          <ListingContainer currentView={'Character'} />
+          {this.renderContent()}
         </div>
       </MuiThemeProvider>
     )
   }
 
+  renderContent = () => {
+    const { params } = this.props;
+
+    if (params.type && params.typeId) {
+      return <SingleObjectContainer currentView={params.type} viewId={params.typeId}/>
+    }
+
+    return (
+      <ListingContainer/>
+    )
+  }
+
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+
+  }
+};
+
+export default connect()(App);

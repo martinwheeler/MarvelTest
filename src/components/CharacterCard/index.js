@@ -12,10 +12,22 @@ const style = {
     cursor: 'pointer',
     margin: 20,
     width: 216
+  },
+  title: {
+    fontFamily: 'Oswald',
+    fontWeight: '500'
+  },
+  body: {
+    fontFamily: 'Oswald',
+    fontWeight: '300'
+  },
+  image: {
+    width: 216,
+    height: 324
   }
 };
 
-export default class Character extends Component {
+export default class CharacterCard extends Component {
 
   constructor(props) {
     super(props);
@@ -27,13 +39,21 @@ export default class Character extends Component {
     return (
       <Card style={style.card}>
         <Paper zDepth={2} >
-          <CardMedia onTouchTap={() => character.view(character.id)}>
+          <CardMedia style={style.image} onTouchTap={() => character.view(character.id)}>
             <img src={`
               ${character.thumbnail.path}/portrait_incredible.${character.thumbnail.extension}
             `} />
           </CardMedia>
-          <CardTitle title={character.name} subtitle={''} onTouchTap={() => character.view(character.id)} />
-          <CardText onTouchTap={() => character.view(character.id)}>
+          <CardTitle
+            style={style.title}
+            title={character.name}
+            subtitle={''}
+            onTouchTap={() => character.view(character.id)}
+          />
+          <CardText
+            style={style.body}
+            onTouchTap={() => character.view(character.id)}
+          >
             {character.description}
           </CardText>
           <CardActions>
