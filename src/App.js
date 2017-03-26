@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { indigo500 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import Drawer from 'material-ui/Drawer';
 import ListingContainer from './containers/ListingContainer';
 import SingleObjectContainer from './containers/SingleObjectContainer';
 import { browserHistory } from 'react-router';
+
+const styles = {
+  body: {
+    margin: 20
+  }
+};
 
 class App extends Component {
 
@@ -19,7 +22,6 @@ class App extends Component {
     this.state = {
       open: false,
     };
-    this.currentComponent = undefined;
   }
 
   handlePageChange = (page) => {
@@ -53,21 +55,25 @@ class App extends Component {
             </MenuItem>
             <MenuItem
               onTouchTap={(e) => this.handlePageChange(e.target.textContent)}
+              disabled={true}
             >
               Creators
             </MenuItem>
             <MenuItem
               onTouchTap={(e) => this.handlePageChange(e.target.textContent)}
+              disabled={true}
             >
               Events
             </MenuItem>
             <MenuItem
               onTouchTap={(e) => this.handlePageChange(e.target.textContent)}
+              disabled={true}
             >
               Series
             </MenuItem>
             <MenuItem
               onTouchTap={(e) => this.handlePageChange(e.target.textContent)}
+              disabled={true}
             >
               Stories
             </MenuItem>
@@ -75,19 +81,6 @@ class App extends Component {
           <AppBar
             title="Marvel"
             onLeftIconButtonTouchTap={() => this.setState({ open: !this.state.open })}
-            iconElementRight={
-              <IconMenu
-                iconButtonElement={
-                  <IconButton><MoreVertIcon /></IconButton>
-                }
-                targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-              >
-                <MenuItem primaryText="Refresh" />
-                <MenuItem primaryText="Help" />
-                <MenuItem primaryText="Sign out" />
-              </IconMenu>
-            }
             style={appBarStyles}
           />
           {this.renderContent()}
@@ -107,7 +100,7 @@ class App extends Component {
       return <ListingContainer currentView={params.type} />
     }
 
-    return ''
+    return <div style={styles.body} >Please chose an option from the menu.</div>
   }
 
 }

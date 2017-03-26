@@ -1,18 +1,17 @@
 /**
  * Created by martinwheeler on 24/3/17.
  */
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { GridList, GridTile } from "material-ui/GridList";
-import Masonry from "react-masonry-component";
-import Waypoint from "react-waypoint";
-import TextField from "material-ui/TextField";
-import { attemptFetchCharacters } from "../../actions/characters";
-import { attemptFetchComics, attemptFetchComicById } from "../../actions/comics";
-import MarvelCard from "../../components/MarvelCard";
-import { browserHistory } from 'react-router';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Masonry from 'react-masonry-component';
+import Waypoint from 'react-waypoint';
+import { push } from 'react-router-redux';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import Measure from 'react-measure';
+import NotificationSystem from 'react-notification-system';
+import { attemptFetchCharacters } from '../../actions/characters';
+import { attemptFetchComics } from '../../actions/comics';
+import MarvelCard from '../../components/MarvelCard';
 
 const styles = {
   root: {
@@ -71,7 +70,7 @@ class ListingContainer extends Component {
 
     // reset the view as we have changed what type of items to fetch
     if (prevProps.currentView !== currentView) {
-      this.setState({items: []});
+      this.setState({ items: [] });
       this.amountToOffset = 0;
       this.loadMore();
     }
@@ -95,7 +94,12 @@ class ListingContainer extends Component {
     // fail fetch
     if (prevProps.attemptingFetch[ currentView ] && !attemptingFetch[ currentView ] &&
       fetchFail[ currentView ]) {
-      console.log('fail')
+      this.notifications.addNotification({
+        message: 'Sorry there seems to be a problem with your request!',
+        title: 'Error',
+        level: 'error',
+        autoDismiss: '5',
+      });
     }
 
   }
@@ -114,14 +118,14 @@ class ListingContainer extends Component {
   };
 
   navigateToId = (id) => {
-    browserHistory.push(`/${this.props.currentView}/${id}`);
+    this.props.push(`/${this.props.currentView}/${id}`);
   };
 
   /*
    * Render everything in a masonry style layout.
    */
   render() {
-    const { items, loading, width } = this.state;
+    const { items, loading } = this.state;
     const self = this;
 
     let cardAmount = parseInt(this.state.width / 256);
@@ -137,48 +141,28 @@ class ListingContainer extends Component {
           <div></div>
         </Measure>
 
-        <GridList
-          cols={12}
-          cellHeight="auto"
+        <Masonry
+          updateOnEachImageLoad={true}
+          style={dynamicWidth}
         >
-          <GridTile
-            cols={12}
-            rows={1}
-          >
-            <TextField
-              hintText="3-D Man"
-              floatingLabelText="Search"
-            />
-          </GridTile>
+          {items.map((item, key) => (
+            <MarvelCard key={key} item={{ ...item, view: self.navigateToId }} />
+          ))}
+        </Masonry>
 
-          <GridTile
-            cols={12}
-            rows={1}
-            style={styles.listings}
-          >
-            <Masonry
-              updateOnEachImageLoad={true}
-              style={dynamicWidth}
-            >
-              {items.map((item, key) => (
-                <MarvelCard key={key} item={{ ...item, view: self.navigateToId }} />
-              ))}
-            </Masonry>
+        <Waypoint topOffset="60%" onEnter={() => this.loadMore()} />
 
-            <Waypoint topOffset="60%" onEnter={() => this.loadMore()} />
-
-            <div style={styles.loading} >
-              <RefreshIndicator
-                size={50}
-                left={0}
-                top={0}
-                loadingColor="#FF9800"
-                status={loading}
-                style={styles.refresh}
-              />
-            </div>
-          </GridTile>
-        </GridList>
+        <div style={styles.loading} >
+          <RefreshIndicator
+            size={50}
+            left={0}
+            top={0}
+            loadingColor="#FF9800"
+            status={loading}
+            style={styles.refresh}
+          />
+        </div>
+        <NotificationSystem ref={notifications => this.notifications = notifications} />
       </div>
     )
   }
@@ -208,8 +192,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    attemptFetchCharacters: (payload) => dispatch(attemptFetchCharacters(payload)),
-    attemptFetchComics: (payload) => dispatch(attemptFetchComics(payload)),
+    push: payload => dispatch(push(payload)),
+    attemptFetchCharacters: payload => dispatch(attemptFetchCharacters(payload)),
+    attemptFetchComics: payload => dispatch(attemptFetchComics(payload)),
   }
 };
 

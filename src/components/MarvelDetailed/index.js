@@ -23,12 +23,12 @@ const styles = {
   title: {
     large: {
       fontFamily: 'Oswald, Arial, sans-serif',
-      margin: '10px 0',
+      margin: '10px 20px',
       fontWeight: '500',
     },
     small: {
       fontFamily: 'Oswald, Arial, sans-serif',
-      margin: '10px 0',
+      margin: '10px 20px',
       fontWeight: '300',
     }
   },
@@ -52,7 +52,7 @@ const styles = {
     justifyContent: 'center'
   },
   contentContainer: {
-    width: '1200px',
+    width: '95vw',
     position: 'absolute',
     left: '50%',
     transform: 'translateX(-50%)',
@@ -72,12 +72,6 @@ export default class MarvelDetailed extends Component {
     super(props);
   }
 
-  componentWillReceiveProps(newProps) {
-    console.log('props', newProps)
-
-
-  }
-
   renderTabs = () => {
     const { item, currentView } = this.props;
 
@@ -94,10 +88,7 @@ export default class MarvelDetailed extends Component {
               <Paper zDepth={2} >
                 {item.characters.items.map((character, key) => (
                   <div key={key} >
-                    <div
-                      onTouchTap={() => this.props.onItemClick('characters', character.resourceURI)}
-                      style={styles.listItem}
-                    >
+                    <div style={styles.listItem} >
                       {character.name}
                     </div>
                     <Divider/>
@@ -110,7 +101,7 @@ export default class MarvelDetailed extends Component {
               <Paper zDepth={2} >
                 {item.creators.items.map((creator, key) => (
                   <div key={key} >
-                    <div onTouchTap={this.props.onItemClick} style={styles.listItem} >
+                    <div style={styles.listItem} >
                       {creator.name}
                     </div>
                     <Divider/>
@@ -123,7 +114,7 @@ export default class MarvelDetailed extends Component {
               <Paper zDepth={2} >
                 {item.stories.items.map((story, key) => (
                   <div key={key} >
-                    <div onTouchTap={this.props.onItemClick} style={styles.listItem} >
+                    <div style={styles.listItem} >
                       {story.name}
                     </div>
                     <Divider/>
@@ -143,8 +134,7 @@ export default class MarvelDetailed extends Component {
               <Paper zDepth={2} >
                 {item.comics.items.map((comic, key) => (
                   <div key={key} >
-                    <div onTouchTap={() => this.props.onItemClick('comics', comic.resourceURI)}
-                         style={styles.listItem} >
+                    <div style={styles.listItem} >
                       {comic.name}
                     </div>
                     <Divider/>
@@ -157,7 +147,7 @@ export default class MarvelDetailed extends Component {
               <Paper zDepth={2} >
                 {item.series.items.map((standAlone, key) => (
                   <div key={key} >
-                    <div onTouchTap={this.props.onItemClick} style={styles.listItem} >
+                    <div style={styles.listItem} >
                       {standAlone.name}
                     </div>
                     <Divider/>
@@ -170,7 +160,7 @@ export default class MarvelDetailed extends Component {
               <Paper zDepth={2} >
                 {item.stories.items.map((story, key) => (
                   <div key={key} >
-                    <div onTouchTap={this.props.onItemClick} style={styles.listItem} >
+                    <div style={styles.listItem} >
                       {story.name}
                     </div>
                     <Divider/>
@@ -209,7 +199,6 @@ export default class MarvelDetailed extends Component {
 
         }
       </div>
-
     )
   }
 

@@ -3,32 +3,20 @@
  */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+import NotificationSystem from 'react-notification-system';
 
 import { attemptFetchCharacterById } from '../../actions/characters';
 import { attemptFetchComicById } from '../../actions/comics';
 import MarvelDetailed from '../../components/MarvelDetailed';
-import { push } from 'react-router-redux';
-import NotificationSystem from 'react-notification-system';
-
-const notificationOpts = {
-  // uid: 'once-please', // you can specify your own uid if required
-  title: 'Hey, it\'s good to see you!',
-  message: 'Now you can see how easy it is to use notifications in React!',
-  position: 'tr',
-  autoDismiss: 0,
-  action: {
-    label: 'Click me!!',
-    callback: () => alert('clicked!')
-  }
-};
 
 class SingleObjectContainer extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      item: undefined
-    }
+      item: undefined,
+    };
   }
 
   componentWillMount() {
@@ -41,34 +29,7 @@ class SingleObjectContainer extends Component {
     }
   }
 
-  handleClick = (type, id) => {
-    this.notifications.addNotification({
-      message: `${type}, ${id}`,
-      title: 'Coming soon!',
-      level: 'info',
-      autoDismiss: '5'
-    });
-
-
-
-    if (type && id) {
-      id = id.split('/').pop();
-
-      switch (type) {
-        case 'characters':
-        default:
-          this.props.attemptFetchCharacterById({ id: id });
-          break;
-        case 'comics':
-          this.props.attemptFetchComicById({ id: id });
-          break;
-      }
-    }
-  };
-
   componentDidUpdate(prevProps) {
-    console.log('updated');
-
     const {
       data,
       attemptingFetch,
@@ -78,7 +39,7 @@ class SingleObjectContainer extends Component {
     } = this.props;
 
     if (prevProps.currentView !== currentView) {
-      console.log('update the item now!')
+      // TODO: Update the component with the new data as we have changed the type
     }
 
     if (prevProps.attemptingFetch[ currentView ] && !attemptingFetch[ currentView ]) {
@@ -86,10 +47,14 @@ class SingleObjectContainer extends Component {
         this.setState({ item: data[ currentView ].results[ 0 ] });
       }
       if (fetchFail[currentView]) {
-        console.log('fail')
+        this.notifications.addNotification({
+          message: 'Sorry there seems to be a problem with your request!',
+          title: 'Error',
+          level: 'error',
+          autoDismiss: '5',
+        });
       }
     }
-
   }
 
   render() {
@@ -98,8 +63,9 @@ class SingleObjectContainer extends Component {
         <MarvelDetailed
           currentView={this.props.currentView}
           item={this.state.item}
-          onItemClick={this.handleClick} />
-        <NotificationSystem ref={(notifications) => this.notifications = notifications} />
+          onItemClick={this.handleClick}
+        />
+        <NotificationSystem ref={notifications => this.notifications = notifications} />
       </div>
     )
   }
@@ -108,30 +74,30 @@ class SingleObjectContainer extends Component {
 const mapStateToProps = (state) => {
   return {
     data: {
-      characters: state.characters.data,
-      comics: state.comics.data
+      characters: state.characters.dataById,
+      comics: state.comics.dataById,
     },
     attemptingFetch: {
-      characters: state.characters.attemptingFetch,
-      comics: state.comics.attemptingFetch
+      characters: state.characters.attemptingFetchById,
+      comics: state.comics.attemptingFetchById,
     },
     fetchSuccess: {
-      characters: state.characters.fetchSuccess,
-      comics: state.comics.fetchSuccess
+      characters: state.characters.fetchSuccessById,
+      comics: state.comics.fetchSuccessById,
     },
     fetchFail: {
-      characters: state.characters.fetchFail,
-      comics: state.comics.fetchFail
-    }
-  }
+      characters: state.characters.fetchFailById,
+      comics: state.comics.fetchFailById,
+    },
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    push: (payload) => dispatch(push(payload)),
-    attemptFetchCharacterById: (payload) => dispatch(attemptFetchCharacterById(payload)),
-    attemptFetchComicById: (payload) => dispatch(attemptFetchComicById(payload))
-  }
+    push: payload => dispatch(push(payload)),
+    attemptFetchCharacterById: payload => dispatch(attemptFetchCharacterById(payload)),
+    attemptFetchComicById: payload => dispatch(attemptFetchComicById(payload)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SingleObjectContainer);

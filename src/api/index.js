@@ -1,4 +1,4 @@
-import {create} from 'apisauce';
+import { create } from 'apisauce';
 import * as utils from './utils';
 
 const keys = {
@@ -6,13 +6,12 @@ const keys = {
   private: '561dbcaedad4a7e45855083b1916b35dafee1063',
 };
 
-// define the api
 const api = create({
   baseURL: 'https://gateway.marvel.com/v1/public/',
-  headers: {'Accept': 'application/json'}
+  headers: { Accept: 'application/json' },
 });
 
-const get = function(url, body, resolve, reject) {
+const get = function (url, body, resolve) {
   api
     .get(url, body)
     .then((response) => {
@@ -30,16 +29,16 @@ const get = function(url, body, resolve, reject) {
  * @returns {Promise}
  */
 export function getCharacters(body) {
-  let ts = utils.getTimestamp(),
-  params = {
+  const ts = utils.getTimestamp();
+  const params = {
     ts: ts,
     apikey: keys.public,
     hash: utils.getHash(ts, keys.private, keys.public),
-    ...body
+    ...body,
   };
 
   return new Promise((resolve, reject) => {
-    get(`characters`, params, resolve, reject);
+    get('characters', params, resolve, reject);
   });
 }
 
@@ -50,13 +49,13 @@ export function getCharacters(body) {
  * @returns {Promise}
  */
 export function getCharacterById(body) {
-  let ts = utils.getTimestamp(),
-    params = {
-      ts: ts,
-      apikey: keys.public,
-      hash: utils.getHash(ts, keys.private, keys.public),
-      ...body
-    };
+  const ts = utils.getTimestamp();
+  const params = {
+    ts: ts,
+    apikey: keys.public,
+    hash: utils.getHash(ts, keys.private, keys.public),
+    ...body,
+  };
 
   return new Promise((resolve, reject) => {
     get(`characters/${params.id}`, params, resolve, reject);
@@ -70,16 +69,16 @@ export function getCharacterById(body) {
  * @returns {Promise}
  */
 export function getComics(body) {
-  let ts = utils.getTimestamp(),
-    params = {
-      ts: ts,
-      apikey: keys.public,
-      hash: utils.getHash(ts, keys.private, keys.public),
-      ...body
-    };
+  const ts = utils.getTimestamp();
+  const params = {
+    ts: ts,
+    apikey: keys.public,
+    hash: utils.getHash(ts, keys.private, keys.public),
+    ...body,
+  };
 
   return new Promise((resolve, reject) => {
-    get(`comics`, params, resolve, reject);
+    get('comics', params, resolve, reject);
   });
 }
 
@@ -95,13 +94,10 @@ export function getComicById(body) {
       ts: ts,
       apikey: keys.public,
       hash: utils.getHash(ts, keys.private, keys.public),
-      ...body
+      ...body,
     };
 
   return new Promise((resolve, reject) => {
     get(`comics/${params.id}`, params, resolve, reject);
   });
 }
-
-// customizing headers per-request
-// api.post('/users', {name: 'steve'}, {headers: {'x-gigawatts': '1.21'}})
