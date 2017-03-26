@@ -1,11 +1,10 @@
 /**
  * Created by martinwheeler on 26/3/17.
  */
-import React, { Component } from 'react';
-
-import Avatar from 'material-ui/Avatar';
-import Divider from 'material-ui/Divider';
-import { Tabs, Tab } from 'material-ui/Tabs';
+import React, {Component} from "react";
+import Avatar from "material-ui/Avatar";
+import Divider from "material-ui/Divider";
+import {Tabs, Tab} from "material-ui/Tabs";
 
 const styles = {
   root: {
@@ -70,41 +69,41 @@ export default class CharacterDetailed extends Component {
   }
 
   render() {
-    const { character } = this.props;
+    const {character} = this.props;
 
     console.log(character);
 
     return (
-      <div style={styles.root} >
+      <div style={styles.root}>
         { character &&
         <div>
-          <div style={styles.headerWrapper} >
+          <div style={styles.headerWrapper}>
             <Avatar
               size={120}
               src={`
               ${character.thumbnail.path}/portrait_fantastic.${character.thumbnail.extension}
             `}
             />
-            <h2 style={styles.title.large} >{character.name}</h2>
-            <h4 style={styles.title.small} >Last modified {character.modified}</h4>
+            <h2 style={styles.title.large}>{character.name}</h2>
+            <h4 style={styles.title.small}>Last modified {character.modified}</h4>
 
             <Tabs style={styles.tabsWrapper} tabItemContainerStyle={styles.tabWrapper}
-                  inkBarStyle={styles.inkBar} contentContainerStyle={styles.contentContainer} >
-              <Tab label="Comics" style={styles.tab} >
+                  inkBarStyle={styles.inkBar} contentContainerStyle={styles.contentContainer}>
+              <Tab label="Comics" style={styles.tab}>
                 {character.comics.items.map((comic) => (
-                  <div>
+                  <div onTouchTap={this.props.onItemClick}>
                     {comic.name}
                   </div>
                 ))}
               </Tab>
-              <Tab label="Series" style={styles.tab} >
+              <Tab label="Series" style={styles.tab}>
                 {character.series.items.map((serie) => (
                   <div>
                     {serie.name}
                   </div>
                 ))}
               </Tab>
-              <Tab label="Stories" style={styles.tab} >
+              <Tab label="Stories" style={styles.tab}>
                 {character.stories.items.map((story) => (
                   <div>
                     {story.name}

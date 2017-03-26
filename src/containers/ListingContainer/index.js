@@ -11,6 +11,7 @@ import {attemptFetchCharacters, attemptFetchCharacterById} from "../../actions/c
 import CharacterCard from "../../components/CharacterCard";
 import {browserHistory} from 'react-router';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
+import Measure from 'react-measure';
 
 const styles = {
   root: {
@@ -39,7 +40,8 @@ class ListingContainer extends Component {
     this.state = {
       colSize: 4,
       characters: [],
-      loading: "loading"
+      loading: "loading",
+      width: 0
     };
     this.amountToOffset = 0;
   }
@@ -82,15 +84,24 @@ class ListingContainer extends Component {
 
   navigateToId = (id) => {
     browserHistory.push(`/character/${id}`);
-    // this.props.attemptFetchCharacterById({id: id});
   };
 
   render() {
-    const {characters, loading} = this.state;
+    const {characters, loading, width} = this.state;
     const self = this;
+
+    let cardAmount = parseInt(this.state.width / 256);
+
+    const dynamicWidth = {
+      width: 'calc( 256px * ' + cardAmount + ' )',
+      margin: '0 auto'
+    };
 
     return (
       <div style={styles.root}>
+        <Measure onMeasure={({width}) => this.setState({width: width})}>
+          <div></div>
+        </Measure>
         <GridList
           cols={12}
           cellHeight="auto"
@@ -112,6 +123,7 @@ class ListingContainer extends Component {
           >
             <Masonry
               updateOnEachImageLoad={true}
+              style={dynamicWidth}
             >
               {characters.map((character, key) => (
                 <CharacterCard key={key} character={{...character, view: self.navigateToId}}/>

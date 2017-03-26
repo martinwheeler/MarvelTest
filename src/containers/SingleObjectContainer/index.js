@@ -6,6 +6,19 @@ import { connect } from 'react-redux';
 
 import { attemptFetchCharacterById } from '../../actions/characters';
 import CharacterDetailed from '../../components/CharacterDetailed';
+import Notifications from 'react-notification-system-redux';
+
+const notificationOpts = {
+  // uid: 'once-please', // you can specify your own uid if required
+  title: 'Hey, it\'s good to see you!',
+  message: 'Now you can see how easy it is to use notifications in React!',
+  position: 'tr',
+  autoDismiss: 0,
+  action: {
+    label: 'Click me!!',
+    callback: () => alert('clicked!')
+  }
+};
 
 class SingleObjectContainer extends Component {
 
@@ -19,6 +32,13 @@ class SingleObjectContainer extends Component {
   componentWillMount() {
     this.props.attemptFetchCharacterById({id: this.props.viewId});
   }
+
+
+  handleClick = () => {
+    this.context.store.dispatch(
+      Notifications.success(notificationOpts)
+    );
+  };
 
   componentDidUpdate(prevProps) {
 
@@ -41,7 +61,7 @@ class SingleObjectContainer extends Component {
   }
 
   render() {
-    return  <CharacterDetailed character={this.state.character}/>
+    return  <CharacterDetailed character={this.state.character} onItemClick={this.handleClick}/>
   }
 }
 
