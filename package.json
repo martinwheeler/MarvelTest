@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "start": "webpack-dev-server --open --progress --watch --hot --inline"
+    "start": "webpack-dev-server --open --progress --watch --hot --inline",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
